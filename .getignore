@@ -1,0 +1,43 @@
+<LeftMouse># Neovim Backup and Swap Files
+[._]*.s[a-v][a-z]
+[._]s[a-v][a-z]
+[._]*.sw[a-p]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# Temporary Files
+*~
+
+# Auto-generated Tag Files
+tags
+
+# Persistent Undo
+[._]*.un~
+
+# ctags
+tags
+cscope.*
+# Neovim Backup and Swap Files
+[._]*.s[a-v][a-z]
+[._]s[a-v][a-z]
+[._]*.sw[a-p]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+
+# Temporary Files
+*~
+
+# Auto-generated Tag Files
+tags
+
+# Persistent Undo
+[._]*.un~
+
+# ctags
+tags
+cscope.*
+
