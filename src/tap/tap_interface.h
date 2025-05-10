@@ -1,4 +1,6 @@
-#ifdef TAP_INTERFACE.h
-#define TAP_INTERFACE.h
+#ifdef TAP_H
+#define TAP_H
 
-int tun_alloc()
+int tun_alloc(char *dev);
+
+#endif
