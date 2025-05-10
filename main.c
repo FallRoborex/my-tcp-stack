@@ -1,4 +1,4 @@
-#include "ethernet/ethernet.h"
+#include "src/ethernet/ethernet.h"
 #include <string.h>
 
 int main() {
