@@ -23,7 +23,7 @@ void ethernet_send(const uint8_t *dst_mac, uint16_t ethertype, const uint8_t *pa
     memcpy(frame + sizeof(ethernet_header_t), payload, len);
 
     size_t frame_len = sizeof(ethernet_header_t) + len;
-    printf("Received Ethernet frame");
+    printf("Received Ethernet frame\n");
     printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
               hdr -> dst_mac[0], hdr -> dst_mac[1], hdr -> dst_mac[2],
               hdr -> dst_mac[3], hdr -> dst_mac[4], hdr -> dst_mac[5]);
@@ -39,11 +39,11 @@ void ethernet_send(const uint8_t *dst_mac, uint16_t ethertype, const uint8_t *pa
 
 void ethernet_receive(const uint8_t *frame, size_t len) {
     const ethernet_header_t *hdr = (const ethernet_header_t *)frame;
-    printf("Received Ethernet frame from");
+    printf("Received Ethernet frame from\n");
     printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
               hdr -> src_mac[0], hdr -> src_mac[1], hdr -> src_mac[2],
               hdr -> src_mac[3], hdr -> src_mac[4], hdr -> src_mac[5]);
-    printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+    printf("Destination MAC\n: %02x:%02x:%02x:%02x:%02x:%02x\n",
               hdr -> dst_mac[0], hdr -> dst_mac[1], hdr -> dst_mac[2],
               hdr -> dst_mac[3], hdr -> dst_mac[4], hdr -> dst_mac[5]);
     

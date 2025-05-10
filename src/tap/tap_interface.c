@@ -14,9 +14,9 @@ int tun_alloc(char *dev) {
 
     char *dev_path = "/dev/net/tun";
 
-    // Open the TUN/TAP device
+    // Open the TAP device
     if ((fd = open(dev_path, O_RDWR)) < 0) {
-        perror("Cannot open TUN/TAP dev");
+        perror("Cannot open TUN/TAP dev\n");
         exit(1);
     }
 
@@ -32,16 +32,17 @@ int tun_alloc(char *dev) {
         ifr.ifr_name[IFNAMSIZ - 1] = '\0';  // Ensure null-termination
     }
 
-    // Set the TUN/TAP device with the specified interface name
+    // Set the TAP device with the specified interface name
     if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
-        perror("Error: Could not ioctl tun");
+        perror("Error: Could not ioctl tun\n");
         close(fd);
         return -1;
     }
-
+    
     // Copy the interface name back to dev
     strcpy(dev, ifr.ifr_name);
-    printf("TUN/TAP device %s created\n", dev);
+    printf("TAP device %s created\n", dev);
+    printf("I GOT HERE\n");
 
     return fd;
 }
