@@ -14,7 +14,6 @@ int main() {
     uint8_t payload[100] = "Hello, world!";
     char dev[IFNAMSIZ] = "tap0";
 
-    printf("Got Here\n");
     int tap_fd = tun_alloc(dev);
     printf("TAP device file descriptor: %d\n", tap_fd);
     if (tap_fd < 0) return 1;
@@ -23,8 +22,9 @@ int main() {
     while (1) {
         int nread = read(tap_fd, buffer, sizeof(buffer));
         if (nread > 0) {
-            printf("Read %d bytes from TAP device\n", nread);
+            printf("\nRead %d bytes from TAP device\n", nread);
             ethernet_receive(buffer, nread);
+            printf("\n");
         }
     }
     return 0;

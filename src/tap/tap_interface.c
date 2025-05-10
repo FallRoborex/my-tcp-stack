@@ -41,8 +41,7 @@ int tun_alloc(char *dev) {
     
     // Copy the interface name back to dev
     strcpy(dev, ifr.ifr_name);
-    printf("TAP device %s created\n", dev);
-    printf("I GOT HERE\n");
+    printf("TAP device %s created...\n\n", dev);
 
     return fd;
 }
