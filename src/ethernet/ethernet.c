@@ -31,7 +31,7 @@ void ethernet_send(const uint8_t *dst_mac, uint16_t ethertype, const uint8_t *pa
               hdr -> src_mac[0], hdr -> src_mac[1], hdr -> src_mac[2],
               hdr -> src_mac[3], hdr -> src_mac[4], hdr -> src_mac[5]);
     
-    // TODO: Send the frame to the network using a socket or TAP interface
+    // Send the frame to the network using a socket or TAP interface
     // For now, just print the frame length
     printf("Frame length: %zu bytes\n", frame_len);
     
