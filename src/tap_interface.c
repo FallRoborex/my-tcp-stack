@@ -1,35 +1,45 @@
+#include <linux/if.h>
+#include <linux/if_tun.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 int tun_alloc(char *dev) {
-  struct ifred ifr;
-  int fd, err;
+    struct ifreq ifr;
+    int fd;
 
-  if (fd = open("/dev/net/tap", O_RDWR)) < 0) {
-    perror("Cannot open TUN/TAP dev");
-    exit(1);
-  }
+    char *dev_path = "/dev/net/tun";
 
-  clear(ifr);
+    // Open the TUN/TAP device
+    if ((fd = open(dev_path, O_RDWR)) < 0) {
+        perror("Cannot open TUN/TAP dev");
+        exit(1);
+    }
 
-  /* Flags: IFF_TUN - TUN Device (no Ethernet headers)
-   *        IFF_TAP - TAP device
-   *        IFF_NO_PI - Do not provide pocket information
-   */
-  
+    // Clear the structure
+    memset(&ifr, 0, sizeof(ifr));
 
-  ifr.ifr_flag = IFF_TAP | IFF_NO_PI;
+    // Set up the flags for the interface
+    ifr.ifr_flags = IFF_TAP | IFF_NO_PI;
 
-  if (*dev) {
-    strcpy(ifr.ifr_name, dev, IFNAMSIZE);
-  }
+    // If a device name was provided, copy it to the structure
+    if (*dev) {
+        strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+        ifr.ifr_name[IFNAMSIZ - 1] = '\0';  // Ensure null-termination
+    }
 
-  if (err = ioctl(fd, TUNSETIFF, (void *)&ifr) < 0) {
-    perror("ERROR: Could not ioctl turn: %s\n", strerror(errno));
-    close(fd);
-    return err;
-  }
+    // Set the TUN/TAP device with the specified interface name
+    if (ioctl(fd, TUNSETIFF, (void *) &ifr) < 0) {
+        perror("Error: Could not ioctl tun");
+        close(fd);
+        return -1;
+    }
 
-  strcpy(dev, ifr.ifr_name);
-  return fd;
+    // Copy the interface name back to dev
+    strcpy(dev, ifr.ifr_name);
 
+    return fd;
 }
