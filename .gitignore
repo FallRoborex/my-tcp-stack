@@ -1,0 +1,48 @@
+# .gitignore for TCP Chatroom (General + VSCode)
+
+# VSCode settings
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Environment files
+.env
+*.env
+
+# Dependency directories
+node_modules/
+vendor/
+
+# Compiled output (C/C++, Java, etc.)
+*.class
+*.o
+*.out
+*.exe
+*.so
+*.dll
+*.pyc
+__pycache__/
+
+# Build artifacts
+build/
+dist/
+
+# Python virtual environments
+venv/
+.env/
+.venv/
+
+# IDE-specific files
+.idea/
+*.iml
+
+# Others
+*.bak
+*.swp
+*~
+
