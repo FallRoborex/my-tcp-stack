@@ -13,21 +13,22 @@
 
 
 
-struct arp_header {
+typedef struct {
     uint16_t hw_type;
     uint16_t proto;
     uint8_t hw_len;
     uint8_t proto_len;
     uint16_t operation; // Operation Code
     uint8_t sender_hw_addr[ARP_HW_LEN];
-    uint8_t sender_proto_addr[ARP_PROTO_LEN];
+    uint8_t sender_ip_addr[ARP_PROTO_LEN];
     uint8_t target_hw_addr[ARP_HW_LEN];
-    uint8_t target_proto_addr[ARP_PROTO_LEN];
-} __attribute__((packed));
+    uint8_t target_ip_addr[ARP_PROTO_LEN];
+} __attribute__((packed)) arp_header;
 
-void arp_handle_packet(const uint8_t *packet, size_t len);
-void arp_send_request(const uint8_t *target_ip);
-void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip);
-int arp_lookup(const unint8_t *ip_addr, uint8_t *mac_addr_out);
+// void arp_handle_packet(const uint8_t *packet, size_t len);
+void arp_send_request(const uint8_t *src_mac, const uint8_t *src_ip, const uint8_t *dst_ip);
+void arp_receive(const uint8_t *packet, size_t len);
+void arp_cache_insert(const uint8_t *ip_addr, const uint8_t *mac_addr);
+int arp_cache_lookup(const uint8_t *ip_addr, uint8_t *mac_addr_out);
 
 #endif
