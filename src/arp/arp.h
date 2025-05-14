@@ -25,9 +25,10 @@ typedef struct {
     uint8_t target_ip_addr[ARP_PROTO_LEN];
 } __attribute__((packed)) arp_header;
 
-// void arp_handle_packet(const uint8_t *packet, size_t len);
+void arp_handle_packet(const uint8_t *packet, size_t len);
 void arp_send_request(const uint8_t *src_mac, const uint8_t *src_ip, const uint8_t *dst_ip);
 void arp_receive(const uint8_t *packet, size_t len);
+void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip);
 void arp_cache_insert(const uint8_t *ip_addr, const uint8_t *mac_addr);
 int arp_cache_lookup(const uint8_t *ip_addr, uint8_t *mac_addr_out);
 
