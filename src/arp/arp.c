@@ -40,11 +40,12 @@ void arp_handle_packet(const uint8_t *packet, size_t len)
     }
 
     // Check if the ARP request was meant for us
-    if (opcode == ARP_OPCODE_REQUEST)
+    if (opcode == ARP_OPCODE_REPLY)
     {
         arp_cache_insert(arp->sender_ip_addr, arp->sender_hw_addr);
     } else if (opcode == ARP_OPCODE_REQUEST)
     {
+        // Is the target IP ours?
         if (memcmp(arp->target_ip_addr, local_ip, ARP_PROTO_LEN) == 0)
         {
             // Send ARP replay
@@ -110,6 +111,24 @@ void arp_receive(const uint8_t *packet, size_t len) {
             arp->sender_ip_addr[0], arp->sender_ip_addr[1], arp->sender_ip_addr[2], arp->sender_ip_addr[3],
             arp->sender_hw_addr[0], arp->sender_hw_addr[1], arp->sender_hw_addr[2], arp->sender_hw_addr[3], arp->sender_hw_addr[4], arp->sender_hw_addr[5]);
     }
+
+}
+
+void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip)
+{
+    arp_header arp_reply;
+    arp_reply.hw_type = htons(ARP_HW_TYPE_ETHERNET);
+    arp_reply.hw_len = htons(ARP_HW_LEN);
+    arp_reply.proto = htons(ARP_PROTO_TYPE_IPv4);
+    arp_reply.proto_len = htons(ARP_PROTO_LEN);
+    arp_reply.operation = htons(ARP_OPCODE_REPLY);
+
+    memcpy(arp_reply.sender_hw_addr, local_mac, ARP_HW_LEN);
+    memcpy(arp_reply.sender_ip_addr, local_ip, ARP_PROTO_LEN);
+    memcpy(arp_reply.target_hw_addr, target_mac, ARP_HW_LEN);
+    memcpy(arp_reply.target_ip_addr, target_ip, ARP_PROTO_LEN);
+
+    ethernet_send(target_mac, 0x806, (uint8_t *)&arp_reply, sizeof(arp_reply));
 
 }
 
