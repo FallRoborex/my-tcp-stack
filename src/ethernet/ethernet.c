@@ -23,6 +23,15 @@ void ethernet_send(const uint8_t *dst_mac, uint16_t ethertype, const uint8_t *pa
     memcpy(hdr -> dst_mac, dst_mac, ETH_ADDR_LEN);
     memcpy(hdr -> src_mac, local_mac, ETH_ADDR_LEN);
     hdr -> ethertype = htons(ethertype);
+
+    printf("Etherenet Header size: %zu\n", sizeof(ethernet_header_t));
+
+    if (sizeof(ethernet_header_t) + len > 1514)
+    {
+        printf("Buffer overload: %lu\n", sizeof(ethernet_header_t) + len);
+        perror("Buffer overload\n");
+        return;
+    }
     memcpy(frame + sizeof(ethernet_header_t), payload, len);
 
     size_t frame_len = sizeof(ethernet_header_t) + len;

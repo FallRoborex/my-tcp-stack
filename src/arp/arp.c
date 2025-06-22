@@ -29,9 +29,9 @@ void arp_handle_packet(const uint8_t *packet, size_t len)
 
     const arp_header *arp = (const arp_header *)packet;
 
-    uint8_t hw_type = ntohs(arp->hw_type);
-    uint8_t proto_type = ntohs(arp->proto);
-    uint8_t opcode = ntohs(arp->operation);
+    uint16_t hw_type = ntohs(arp->hw_type);
+    uint16_t proto_type = ntohs(arp->proto);
+    uint16_t opcode = ntohs(arp->operation);
 
     if (hw_type != ARP_HW_TYPE_ETHERNET || proto_type != ARP_PROTO_TYPE_IPv4)
     {
@@ -95,7 +95,11 @@ void arp_send_request(const uint8_t *src_mac, const uint8_t *src_ip, const uint8
     memset(arp_req.target_hw_addr, 0, ARP_HW_LEN);
     memcpy(arp_req.target_ip_addr, dst_ip, ARP_PROTO_LEN);
 
-    ethernet_send((uint8_t[]){0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, ARP_PROTO_TYPE_IPv4, (uint8_t *)&arp_req, sizeof(arp_req));
+    printf("ethernet_send payload length: %zu\n", sizeof(arp_req));
+    size_t frame_len = sizeof(ethernet_header_t) + sizeof(arp_req);
+    printf("Calculated frame length: %zu\n", frame_len);
+
+    ethernet_send((uint8_t[]){0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}, 0x0806, (uint8_t *)&arp_req, sizeof(arp_req));
 }
 
 void arp_receive(const uint8_t *packet, size_t len) {
@@ -116,19 +120,24 @@ void arp_receive(const uint8_t *packet, size_t len) {
 
 void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip)
 {
-    arp_header arp_reply;
-    arp_reply.hw_type = htons(ARP_HW_TYPE_ETHERNET);
-    arp_reply.hw_len = htons(ARP_HW_LEN);
-    arp_reply.proto = htons(ARP_PROTO_TYPE_IPv4);
-    arp_reply.proto_len = htons(ARP_PROTO_LEN);
-    arp_reply.operation = htons(ARP_OPCODE_REPLY);
+    arp_header arp_req;
+    arp_req.hw_type = htons(ARP_HW_TYPE_ETHERNET);
+    arp_req.hw_len = ARP_HW_LEN;
+    arp_req.proto = htons(ARP_PROTO_TYPE_IPv4);
+    arp_req.proto_len = ARP_PROTO_LEN;
+    arp_req.operation = htons(ARP_OPCODE_REPLY);
 
-    memcpy(arp_reply.sender_hw_addr, local_mac, ARP_HW_LEN);
-    memcpy(arp_reply.sender_ip_addr, local_ip, ARP_PROTO_LEN);
-    memcpy(arp_reply.target_hw_addr, target_mac, ARP_HW_LEN);
-    memcpy(arp_reply.target_ip_addr, target_ip, ARP_PROTO_LEN);
+    memcpy(arp_req.sender_hw_addr, local_mac, ARP_HW_LEN);
+    memcpy(arp_req.sender_ip_addr, local_ip, ARP_PROTO_LEN);
+    memcpy(arp_req.target_hw_addr, target_mac, ARP_HW_LEN);
+    memcpy(arp_req.target_ip_addr, target_ip, ARP_PROTO_LEN);
 
-    ethernet_send(target_mac, 0x806, (uint8_t *)&arp_reply, sizeof(arp_reply));
+    printf("ethernet_send payload length: %zu\n", sizeof(arp_req));
+    size_t frame_len = sizeof(ethernet_header_t) + sizeof(arp_req);
+    printf("Calculated frame length: %zu\n", frame_len);
+
+
+    ethernet_send(target_mac, 0x806, (uint8_t *)&arp_req, sizeof(arp_req));
 
 }
 
