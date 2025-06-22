@@ -48,8 +48,8 @@ void arp_handle_packet(const uint8_t *packet, size_t len)
         // Is the target IP ours?
         if (memcmp(arp->target_ip_addr, local_ip, ARP_PROTO_LEN) == 0)
         {
-            // Send ARP replay
-            return;
+            // Send ARP reply
+            arp_send_reply(arp->sender_hw_addr, arp->sender_ip_addr);
         }
     }
 

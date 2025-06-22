@@ -6,13 +6,15 @@ CFLAGS = -Wall -Wextra -g \
          -Iinclude \
          -Isrc/ethernet \
          -Isrc/ip \
-         -Isrc/tap
+         -Isrc/tap \
+         -Isrc/arp
 
 # Source files
 SRCS = main.c \
        src/ethernet/ethernet.c \
        src/ip/ipv4.c \
-       src/tap/tap_interface.c
+       src/tap/tap_interface.c \
+       src/arp/arp.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)

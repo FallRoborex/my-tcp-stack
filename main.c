@@ -5,8 +5,40 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
+
+#include "src/arp/arp.h"
 
 #define IFNAMSIZ 16
+
+uint32_t local_ip[4] = {10, 0, 0, 1};
+uint8_t local_mac[6];
+
+int get_local_mac(const char *iface_name, uint8_t mac[6])
+{
+    int fd = socket(AF_INET, SOCK_DGRAM, 0);
+
+    if (fd < 0)
+    {
+        perror("Socket Error");
+        return -1;
+    }
+
+    struct ifreq ifr;
+    memset(&ifr, 0, sizeof(ifr));
+    strncpy(ifr.ifr_name, iface_name, IFNAMSIZ - 1);
+
+    if (ioctl(fd, SIOCGIFHWADDR, &ifr) < 0)
+    {
+        perror("IOCTL");
+        close(fd);
+        return -1;
+    }
+
+    close(fd);
+    memcpy(mac, ifr.ifr_hwaddr.sa_data, 6);
+    return 0;
+}
 
 int main() {
     printf("Starting TAP device\n");
@@ -18,6 +50,17 @@ int main() {
     printf("TAP device file descriptor: %d\n", tap_fd);
     if (tap_fd < 0) return 1;
 
+    printf("Sending ARP request from 10.0.0.2\n");
+    uint8_t test_ip[4] = {10, 0, 0, 2};
+
+    if (get_local_mac(dev, local_mac))
+    {
+        fprintf(stderr, "FAILED to get mac address for %s\n", dev);
+        return 1;
+    }
+
+    arp_send_request(local_mac, local_ip, test_ip);
+
     uint8_t buffer[1600];
     while (1) {
         int nread = read(tap_fd, buffer, sizeof(buffer));
@@ -27,5 +70,5 @@ int main() {
             printf("\n");
         }
     }
-    return 0;
+    // return 0;
 }
