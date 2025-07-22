@@ -56,8 +56,7 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
     printf("  Protocol: %d\n", hdr->protocol);
 
     // Only handle packets for us
-    extern uint8_t my_ip[4];
-    if (memcmp(hdr->dst_ip, my_ip, 4) != 0)
+    if (memcmp(hdr->dst_ip, local_ip, 4) != 0)
     {
         printf("IPv4 packet not fo us (ignoring)\n");
         return;

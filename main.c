@@ -8,11 +8,10 @@
 #include <sys/ioctl.h>
 
 #include "src/arp/arp.h"
+#include "src/net/net.h"
 
 #define IFNAMSIZ 16
 
-uint8_t local_ip[4] = {10, 0, 0, 1};
-uint8_t local_mac[6] = {0xde, 0xad, 0xef, 0x00, 0x01, 0x00};
 
 int get_local_mac(const char *iface_name, uint8_t mac[6])
 {
