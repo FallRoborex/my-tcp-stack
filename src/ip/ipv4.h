@@ -16,10 +16,10 @@ typedef struct
     uint8_t protocol;
     uint16_t header_checksum;
     uint8_t src_ip[4];
-    uint8_t src_dst[4];
+    uint8_t dst_ip[4];
 } ipv4_header;
 
-void ipv4_handle_packet();
+void ipv4_handle_packet(const uint8_t *data, size_t len);
 void ipv4_checksum();
 
 
