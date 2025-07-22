@@ -141,3 +141,15 @@ void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip)
 
 }
 
+int arp_resolve(const uint8_t *ip_addr, const uint8_t *mac_addr_out)
+{
+    if (arp_cache_lookup(ip_addr, mac_addr_out) == 0)
+    {
+        return 0;
+    }
+    printf("ARP: Mac address not found in the cache. Sending request...\n");
+    arp_send_request(local_mac, local_ip, ip_addr);
+
+    return -1;
+}
+

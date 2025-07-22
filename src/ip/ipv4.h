@@ -20,7 +20,7 @@ typedef struct
 } ipv4_header;
 
 void ipv4_handle_packet(const uint8_t *data, size_t len);
-void ipv4_checksum();
+void ipv4_send_packet(const uint8_t src_ip[4], const uint8_t dst_ip[4], uint8_t protocol, const uint8_t *payload, size_t payload_len);
 
 
 #endif

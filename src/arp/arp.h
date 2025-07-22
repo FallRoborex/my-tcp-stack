@@ -31,5 +31,6 @@ void arp_receive(const uint8_t *packet, size_t len);
 void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip);
 void arp_cache_insert(const uint8_t *ip_addr, const uint8_t *mac_addr);
 int arp_cache_lookup(const uint8_t *ip_addr, uint8_t *mac_addr_out);
+int arp_resolve(const uint8_t *ip_addr, const uint8_t *mac_addr_out);
 
 #endif
