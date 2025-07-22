@@ -29,7 +29,16 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
     size_t header_len = ihl * 4;
     if (len < header_len)
     {
-        printf("Truncated IPv4 header\n");
+        printf("Incomplete Header: len=%zu, expected=%zu\n", len, header_len);
+        return;
+    }
+
+    // Verify the Checksum
+    uint16_t receive_checksum = ntohs(hdr->header_checksum);
+    uint16_t compute_checksum = net_checksum(data, header_len);
+    if (compute_checksum != 0)
+    {
+        printf("IPv4 invalid checksum got 0x%04x , expected 0x0000\n", compute_checksum);
         return;
     }
 
@@ -39,6 +48,7 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
         printf("Truncated IPv4 payload (expected %d bytes)\n", total_length);
         return;
     }
+
     printf("IPv4 packet:\n");
     printf("  From: %d.%d.%d.%d\n", hdr->src_ip[0], hdr->src_ip[1], hdr->src_ip[2], hdr->src_ip[3]);
     printf("  To  : %d.%d.%d.%d\n", hdr->dst_ip[0], hdr->dst_ip[1], hdr->dst_ip[2], hdr->dst_ip[3]);

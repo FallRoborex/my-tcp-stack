@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 
 #include "../arp/arp.h"
+#include "../ip/ipv4.h"
 
 static uint8_t local_mac[ETH_ADDR_LEN] = {0xde, 0xad, 0xef, 0x00, 0x01};
 
@@ -77,8 +78,7 @@ void ethernet_receive(const uint8_t *frame, size_t len) {
 
     case 0x0800: // IPv4
         printf("IPv4 packet received (not handled yet)\n");
-        // TODO: Call your IPv4 handler here.
-        // ipv4_handle_packet(payload, payload_len);
+        ipv4_handle_packet(payload, payload_len);
         break;
 
     case 0x86DD: // IPv6
