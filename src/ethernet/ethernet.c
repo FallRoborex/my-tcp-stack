@@ -80,6 +80,12 @@ void ethernet_receive(const uint8_t *frame, size_t len) {
             // TODO ipv4_handle_packet(payload, payload_len);
             break;
 
+        case 0x086dd: // IPv6
+            printf("IPv6 packet received (not handled yet)\n");
+            // TODO implement an IPv6 handler
+            break;
+
+
         default:
             printf("Unknown ethertype: 0x%04x\n", ethertype);
 
