@@ -64,7 +64,7 @@ int main() {
     while (1) {
         int nread = read(tap_fd, buffer, sizeof(buffer));
         if (nread > 0) {
-            printf("\nRead %d bytes from TAP device\n", nread);
+            // printf("\nRead %d bytes from TAP device\n", nread);
             ethernet_receive(buffer, nread);
             printf("\n");
         }

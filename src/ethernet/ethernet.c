@@ -90,7 +90,6 @@ void ethernet_receive(const uint8_t *frame, size_t len) {
             printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
                    hdr->dst_mac[0], hdr->dst_mac[1], hdr->dst_mac[2],
                    hdr->dst_mac[3], hdr->dst_mac[4], hdr->dst_mac[5]);
-
             printf("Ethertype: 0x%04x\n", ethertype);
             ipv4_handle_packet(payload, payload_len);
             break;

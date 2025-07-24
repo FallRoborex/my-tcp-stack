@@ -143,6 +143,11 @@ void arp_send_reply(const uint8_t *target_mac, const uint8_t *target_ip)
 
 int arp_resolve(const uint8_t *ip_addr, const uint8_t *mac_addr_out)
 {
+
+    printf("\nResolving ARP for IP: %d.%d.%d.%d\n", ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
+    printf("Got MAC: %02x:%02x:%02x:%02x:%02x:%02x\n\n",
+           mac_addr_out[0], mac_addr_out[1], mac_addr_out[2], mac_addr_out[3], mac_addr_out[4], mac_addr_out[5]);
+
     if (arp_cache_lookup(ip_addr, (uint8_t *)mac_addr_out) == 0)
     {
         return 0;

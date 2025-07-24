@@ -8,7 +8,8 @@ CFLAGS = -Wall -Wextra -g \
          -Isrc/ip \
          -Isrc/tap \
          -Isrc/arp \
-         -Isrc/net
+         -Isrc/net \
+         -Isrc/icmp
 
 # Source files
 SRCS = main.c \
@@ -16,13 +17,14 @@ SRCS = main.c \
        src/ip/ipv4.c \
        src/tap/tap_interface.c \
        src/arp/arp.c \
-       src/net/net.c
+       src/net/net.c \
+       src/icmp/icmp.c
 
 # Object files
 OBJS = $(SRCS:.c=.o)
 
 # Output binary
-TARGET = test_eth
+TARGET = start_test
 
 # Default rule
 all: $(TARGET)

@@ -1,6 +1,7 @@
 #include "ipv4.h"
 #include "../net/net.h"
 #include "../arp/arp.h"
+#include "../icmp/icmp.h"
 
 #include <stdio.h>
 #include <stdint.h>
@@ -11,8 +12,6 @@
 
 void ipv4_handle_packet(const uint8_t *data, size_t len)
 {
-
-    printf("IPv4 packet received, lenght = %zu bytes\n", len);
     if (len < sizeof(ipv4_header))
     {
         printf("IPv4 packet is too short");
@@ -21,6 +20,8 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
 
     const ipv4_header *hdr = (const ipv4_header *) data;
     uint8_t version = hdr->version_ihl >> 4;
+    uint8_t dst_ip[4];
+    memcpy(dst_ip, &hdr->dst_ip, 4);
     uint8_t ihl = hdr->version_ihl & 0x0F;
 
     if (version != 4)
@@ -57,6 +58,7 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
     printf("  To  : %d.%d.%d.%d\n", hdr->dst_ip[0], hdr->dst_ip[1], hdr->dst_ip[2], hdr->dst_ip[3]);
     printf("  Protocol: %d\n", hdr->protocol);
 
+
     // Only handle packets for us
     if (memcmp(hdr->dst_ip, local_ip, 4) != 0)
     {
@@ -70,7 +72,7 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
     switch (hdr->protocol)
     {
     case 1: // ICMP
-        printf("    Handling ICMP (not implemented yet)\n");
+        icmp_handle_packet(payload, payload_len, hdr->src_ip, dst_ip);
         break;
     case 6: // TCP
         printf("    TCP packet received (not handled)\n");
@@ -104,11 +106,14 @@ void ipv4_send_packet(const uint8_t src_ip[4], const uint8_t dst_ip[4], uint8_t 
 
     // Resolve destination MAC using ARP
     uint8_t dst_mac[6];
-    if (!arp_resolve(dst_mac, dst_ip))
+    printf("Resolving ARP for IP: %d.%d.%d.%d\n", dst_ip[0], dst_ip[1], dst_ip[2], dst_ip[3]);
+    printf("Got MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+           dst_mac[0], dst_mac[1], dst_mac[2], dst_mac[3], dst_mac[4], dst_mac[5]);
+    if (!arp_resolve(dst_ip, dst_mac))
     {
         printf("IPv4: Cannot send packet, ARP lookup failed\n");
         return;
     }
 
-    ethernet_send(dst_ip, ARP_HW_TYPE_ETHERNET, packet, sizeof(ipv4_header) + payload_len);
+    ethernet_send(dst_mac, 0x0800, packet, sizeof(ipv4_header) + payload_len);
 }
