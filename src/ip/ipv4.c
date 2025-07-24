@@ -11,7 +11,9 @@
 
 void ipv4_handle_packet(const uint8_t *data, size_t len)
 {
-    if (len > sizeof(ipv4_header))
+
+    printf("IPv4 packet received, lenght = %zu bytes\n", len);
+    if (len < sizeof(ipv4_header))
     {
         printf("IPv4 packet is too short");
         return;
@@ -36,7 +38,7 @@ void ipv4_handle_packet(const uint8_t *data, size_t len)
 
     // Verify the Checksum
     uint16_t receive_checksum = ntohs(hdr->header_checksum);
-    uint16_t compute_checksum = net_checksum(data, header_len);
+    uint16_t compute_checksum = net_checksum(data, (int)header_len);
     if (compute_checksum != 0)
     {
         printf("IPv4 invalid checksum got 0x%04x , expected 0x0000\n", compute_checksum);

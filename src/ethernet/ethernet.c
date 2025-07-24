@@ -60,33 +60,47 @@ void ethernet_receive(const uint8_t *frame, size_t len) {
     size_t payload_len = len - sizeof(ethernet_header_t);
     uint16_t ethertype = ntohs(hdr->ethertype);
 
-    printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
-           hdr->src_mac[0], hdr->src_mac[1], hdr->src_mac[2],
-           hdr->src_mac[3], hdr->src_mac[4], hdr->src_mac[5]);
+    if (ethertype != 0x0800 && ethertype != 0x0806 && ethertype == 0x86DD) {
+        return;
+    }
 
-    printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
-           hdr->dst_mac[0], hdr->dst_mac[1], hdr->dst_mac[2],
-           hdr->dst_mac[3], hdr->dst_mac[4], hdr->dst_mac[5]);
 
-    printf("Ethertype: 0x%04x\n", ethertype);
+    // Used for debugging every type of ethertype.
+    // printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+    //        hdr->src_mac[0], hdr->src_mac[1], hdr->src_mac[2],
+    //        hdr->src_mac[3], hdr->src_mac[4], hdr->src_mac[5]);
+    //
+    // printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+    //        hdr->dst_mac[0], hdr->dst_mac[1], hdr->dst_mac[2],
+    //        hdr->dst_mac[3], hdr->dst_mac[4], hdr->dst_mac[5]);
+    //
+    // printf("Ethertype: 0x%04x\n", ethertype);
 
     switch (ethertype) {
-    case 0x0806: // ARP
-        printf("ARP request received\n");
-        arp_handle_packet(payload, payload_len);
-        break;
+        case 0x0806: // ARP
+            printf("ARP request received\n");
+            arp_handle_packet(payload, payload_len);
+            break;
 
-    case 0x0800: // IPv4
-        printf("IPv4 packet received (not handled yet)\n");
-        ipv4_handle_packet(payload, payload_len);
-        break;
+        case 0x0800: // IPv4
+            printf("Source MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+                hdr->src_mac[0], hdr->src_mac[1], hdr->src_mac[2],
+                hdr->src_mac[3], hdr->src_mac[4], hdr->src_mac[5]);
 
-    case 0x86DD: // IPv6
-        printf("Skipping IPv6 packet\n");
-        break;
+            printf("Destination MAC: %02x:%02x:%02x:%02x:%02x:%02x\n",
+                   hdr->dst_mac[0], hdr->dst_mac[1], hdr->dst_mac[2],
+                   hdr->dst_mac[3], hdr->dst_mac[4], hdr->dst_mac[5]);
 
-    default:
-        printf("Unknown ethertype: 0x%04x (skipping)\n", ethertype);
-        break;
+            printf("Ethertype: 0x%04x\n", ethertype);
+            ipv4_handle_packet(payload, payload_len);
+            break;
+
+        case 0x86DD: // IPv6
+            // printf("Skipping Ethertype: 0x%04x", ethertype);
+            break;
+
+        default:
+            printf("Unknown ethertype: 0x%04x (skipping)\n", ethertype);
+            break;
     }
 }
